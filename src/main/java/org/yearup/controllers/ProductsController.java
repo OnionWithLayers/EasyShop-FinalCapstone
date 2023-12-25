@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("products")
-@CrossOrigin
+@RequestMapping("products") // this is the path
+@CrossOrigin //just needed to work on controllers apparently
 public class ProductsController
 {
     private ProductDao productDao;
@@ -24,7 +24,7 @@ public class ProductsController
         this.productDao = productDao;
     }
 
-    @GetMapping("")
+    @GetMapping("") //saying what type of reqMap method it is
     @PreAuthorize("permitAll()")
     public List<Product> search(@RequestParam(name="cat", required = false) Integer categoryId,
                                 @RequestParam(name="minPrice", required = false) BigDecimal minPrice,
