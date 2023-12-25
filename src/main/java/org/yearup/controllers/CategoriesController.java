@@ -30,16 +30,20 @@ public class CategoriesController {
     }
 
     // add the appropriate annotation for a get action
-    @GetMapping("getAll")
+    @GetMapping("/{getAll}")
     public List<Category> getAll() {
         // find and return all categories
+        // just check interfaces for the methods
         return categoryDao.getAllCategories();
     }
 
     // add the appropriate annotation for a get action
+    @GetMapping("/{getById}")
+    // use @PathVariable instead of @RequestParam bc I'm reading the path by an int ID instead of a String;
+    // basically just diff syntax bc it's a diff type
     public Category getById(@PathVariable int id) {
         // get the category by id
-        return null;
+        return categoryDao.getById(id);
     }
 
     // the url to return all products in category 1 would look like this
@@ -47,7 +51,7 @@ public class CategoriesController {
     @GetMapping("{categoryId}/products")
     public List<Product> getProductsById(@PathVariable int categoryId) {
         // get a list of product by categoryId
-        return null;
+        return productDao.listByCategoryId(categoryId);
     }
 
     // add annotation to call this method for a POST action
