@@ -32,7 +32,7 @@ public class CategoriesController {
     }
 
     // add the appropriate annotation for a get action
-    //         "/" is what you norm put in a URL to go more specific and {} is how you set the syntax for calling it
+    // "/" is what you norm put in a URL to go more specific and {} is how you set the syntax for calling it
     // can prolly leave "" blank, and if not, just put "/{getAll}"
     @GetMapping("")
     public List<Category> getAll() {
@@ -63,7 +63,7 @@ public class CategoriesController {
     // add annotation to ensure that only an ADMIN can call this function
     // @PostMapping for adding
     // altho order for annotation does not matter too much, it's best practice to have authorization at top
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Category addCategory(@RequestBody Category category) {
@@ -83,7 +83,7 @@ public class CategoriesController {
 
     // add annotation to call this method for a DELETE action - the url path must include the categoryId
     // add annotation to ensure that only an ADMIN can call this function
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable int id) {
