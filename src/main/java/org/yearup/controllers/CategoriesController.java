@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.yearup.data.CategoryDao;
 import org.yearup.data.ProductDao;
 import org.yearup.models.Category;
@@ -34,6 +35,7 @@ public class CategoriesController {
     // add the appropriate annotation for a get action
     // "/" is what you norm put in a URL to go more specific and {} is how you set the syntax for calling it
     // can prolly leave "" blank, and if not, just put "/{getAll}"
+    @PreAuthorize("permitAll()")
     @GetMapping("")
     public List<Category> getAll() {
         // find and return all categories
@@ -42,6 +44,7 @@ public class CategoriesController {
     }
 
     // add the appropriate annotation for a get action
+    @PreAuthorize("permitAll()")
     @GetMapping("/{categoryId}")
     // use @PathVariable instead of @RequestParam bc I'm reading the path by an int ID instead of a String;
     // basically just diff syntax bc it's a diff type
@@ -53,10 +56,12 @@ public class CategoriesController {
     // the url to return all products in category 1 would look like this
     // inside {} put in the value corresponding to the column
     // https://localhost:8080/categories/1/products
+    @PreAuthorize("permitAll()")
     @GetMapping("/{categoryId}/products")
     public List<Product> getProductsById(@PathVariable int categoryId) {
         // get a list of product by categoryId
         return productDao.listByCategoryId(categoryId);
+
     }
 
     // add annotation to call this method for a POST action
@@ -68,7 +73,13 @@ public class CategoriesController {
     @ResponseStatus(HttpStatus.CREATED)
     public Category addCategory(@RequestBody Category category) {
         // insert the category
-        return categoryDao.create(category);
+        try {
+
+            return categoryDao.create(category);
+
+        } catch (Exception ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
     }
 
     // add annotation to call this method for a PUT (update) action - the url path must include the categoryId
@@ -78,7 +89,13 @@ public class CategoriesController {
     @PutMapping("/{categoryId}")
     public void updateCategory(@PathVariable int id, @RequestBody Category category) {
         // update the category by id
-        categoryDao.update(id, category);
+        try {
+
+            categoryDao.update(id, category);
+
+        } catch (Exception ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
     }
 
 
@@ -89,6 +106,16 @@ public class CategoriesController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable int id) {
         // delete the category by id
-        categoryDao.delete(id);
+        try {
+            var product = productDao.getById(id);
+
+            if (product == null)
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+            productDao.delete(id);
+        } catch (Exception ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
     }
 }
+
