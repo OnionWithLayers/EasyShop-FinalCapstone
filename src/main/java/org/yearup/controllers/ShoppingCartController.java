@@ -1,3 +1,4 @@
+/*
 package org.yearup.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,8 @@ public class ShoppingCartController {
     @PostMapping("/cart/products/{productId}")
     public ShoppingCart addProduct(Principal principal, int productId) {
         return shoppingCartDao.addProduct(productId);
-        /*try {
+        */
+/*try {
 
             String userName = principal.getName();
             return shoppingCartDao.addProduct(productId);
@@ -63,7 +65,8 @@ public class ShoppingCartController {
         }catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Ooooh... haha that didn't work..." +
                     "it was prolly your fault tbh");
-        }*/
+        }*//*
+
     }
 
     // add a PUT method to update an existing product in the cart - the url should be
@@ -81,3 +84,4 @@ public class ShoppingCartController {
         shoppingCartDao.delete(id);
     }
 }
+*/
