@@ -51,19 +51,17 @@ public class CategoriesController {
     // name = "" is required here bc it needs to know where it's getting the info from (the URL)
     public Category getById(@PathVariable(name = "categoryId") int id) {
         // get the category by id
-        try
-        {
+        try {
             var category = categoryDao.getById(id);
 
-            if(category == null)
+            if (category == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
+            }
             return category;
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
+
     }
 
     // the url to return all products in category 1 would look like this
@@ -114,21 +112,25 @@ public class CategoriesController {
 
     // add annotation to call this method for a DELETE action - the url path must include the categoryId
     // add annotation to ensure that only an ADMIN can call this function
+    //this no work, might need to change the product category id and then delete categoryId from categories
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable(name = "categoryId") int id) {
         // delete the category by id
+         /*var category = categoryDao.getById(id);
+        if (category == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);*/
+
         try {
-            var product = productDao.getById(id);
+            categoryDao.delete(id);
 
-            if (product == null)
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
-            productDao.delete(id);
         } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
+
+
+
     }
 }
 

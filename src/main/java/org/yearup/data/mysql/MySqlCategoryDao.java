@@ -19,7 +19,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
     public List<Category> getAllCategories() {
         // get all categories
         List<Category> categoriesList = new ArrayList<>();
-        String query = "SELECT * FROM categories";
+        String query = "SELECT * FROM categories;";
 
         try (Connection connection = getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -41,9 +41,8 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
     public Category getById(int categoryId) {
         // get category by id
         Category category = new Category();
-        String query = "SELECT * FROM categories WHERE category_id = ?";
-        try (Connection connection = getConnection())
-        {
+        String query = "SELECT * FROM categories WHERE category_id = ?;";
+        try (Connection connection = getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, categoryId);
 
@@ -94,7 +93,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
     @Override
     public void update(int categoryId, Category category) {
         // update category
-        String sql = "UPDATE categories SET category_id = ?, name = ?, description = ?";
+        String sql = "UPDATE categories SET category_id = ?, name = ?, description = ?;";
 
         try (Connection connection = getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -111,7 +110,10 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
     @Override
     public void delete(int categoryId) {
         // delete category
-        String query = "DELETE FROM categories WHERE category_id = ?";
+        String query = """
+                DELETE FROM products WHERE category_id = ?;
+                DELETE FROM categories WHERE category_id = ?;
+                """;
 
         try (Connection connection = getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
