@@ -51,22 +51,18 @@ public class CategoriesController {
     // name = "" is required here bc it needs to know where it's getting the info from (the URL)
     public Category getById(@PathVariable(name = "categoryId") int id) {
         // get the category by id
+        Category category = null;
         try {
-            var category = categoryDao.getById(id);
-            if (category.getName() != null) {
-                return category;
-            }
+
+            category = categoryDao.getById(id);
+
         } catch (Exception ex) {
-
-            var category = categoryDao.getById(id);
-            if (category == null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            } else {
-
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
-            }
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
-        return null;
+        if (category == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return category;
     }
 
     // the url to return all products in category 1 would look like this
