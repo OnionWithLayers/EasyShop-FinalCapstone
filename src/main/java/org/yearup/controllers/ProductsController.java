@@ -38,6 +38,7 @@ public class ProductsController
         }
         catch(Exception ex)
         {
+            System.out.println(ex.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }
