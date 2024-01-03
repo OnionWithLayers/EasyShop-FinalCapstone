@@ -40,22 +40,24 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
     @Override
     public Category getById(int categoryId) {
         // get category by id
+        Category category = new Category();
         String query = "SELECT * FROM categories WHERE category_id = ?";
-
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = getConnection())
+        {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, categoryId);
+
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()) {
-                return mapRow(resultSet);
+            if (resultSet.next()) {
+                category = mapRow(resultSet);
+                return category;
             }
 
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
-
         return null;
     }
 
@@ -94,17 +96,14 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
         // update category
         String sql = "UPDATE categories SET category_id = ?, name = ?, description = ?";
 
-        try (Connection connection = getConnection())
-        {
+        try (Connection connection = getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, category.getCategoryId());
             preparedStatement.setString(2, category.getName());
             preparedStatement.setString(3, category.getDescription());
 
             preparedStatement.executeUpdate();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -114,15 +113,12 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
         // delete category
         String query = "DELETE FROM categories WHERE category_id = ?";
 
-        try (Connection connection = getConnection())
-        {
+        try (Connection connection = getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, categoryId);
 
             statement.executeUpdate();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }

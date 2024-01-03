@@ -48,9 +48,22 @@ public class CategoriesController {
     @GetMapping("/{categoryId}")
     // use @PathVariable instead of @RequestParam bc I'm reading the path by an int ID instead of a String;
     // basically just diff syntax bc it's a diff type
-    public Category getById(@PathVariable int id) {
+    // name = "" is required here bc it needs to know where it's getting the info from (the URL)
+    public Category getById(@PathVariable(name = "categoryId") int id) {
         // get the category by id
-        return categoryDao.getById(id);
+        try
+        {
+            var category = categoryDao.getById(id);
+
+            if(category == null)
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+            return category;
+        }
+        catch(Exception ex)
+        {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
     }
 
     // the url to return all products in category 1 would look like this
@@ -87,7 +100,7 @@ public class CategoriesController {
     // @PutMapping for updating
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{categoryId}")
-    public void updateCategory(@PathVariable int id, @RequestBody Category category) {
+    public void updateCategory(@PathVariable(name = "categoryId") int id, @RequestBody Category category) {
         // update the category by id
         try {
 
@@ -104,7 +117,7 @@ public class CategoriesController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCategory(@PathVariable int id) {
+    public void deleteCategory(@PathVariable(name = "categoryId") int id) {
         // delete the category by id
         try {
             var product = productDao.getById(id);
